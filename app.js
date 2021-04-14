@@ -111,7 +111,7 @@ function collisionDetection(){
             let b = bricks[c][r];
             if(b.status === 1){
                 if(x > b.x && x < b.x + brickWidth && y > b.y && y < b.y + brickHeight){
-                    dy = -dy;
+                    // dy = -dy;
                     b.status = 0;
                     score++;
                     if (score === brickRowCount*brickColumnCount){
@@ -172,12 +172,7 @@ function draw(){
 setInterval(draw, 10) 
 
 
-//Notes
-//Using HTML Canvas
-//Understanding HTML Coordinates 
-//Web APIs - https://developer.mozilla.org/en-US/docs/Web/API
-// Drawing shapes with Canvas: https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial
-//MDN BrickerBreaker Tutorial  https://developer.mozilla.org/en-US/docs/Games/Tutorials/2D_Breakout_game_pure_JavaScript
+
 
 
 
