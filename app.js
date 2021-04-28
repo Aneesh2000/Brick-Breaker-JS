@@ -8,7 +8,7 @@ let dx = 2;
 let dy = -2;
 //create the paddle
 let paddleHeight = 12;
-let paddleWidth = 72;
+let paddleWidth = 130;
 //specify starting point of paddle
 let paddleX = (canvas.width-paddleWidth)/2;
 //holding variables for right and left arrows on keyboard
@@ -27,13 +27,17 @@ let score = 0;
 
 //Creating arrays for the bricks
 let bricks = [];
+let count = [];
 for (c =0; c<brickColumnCount; c++){
     bricks[c] = [];
+    count[c] = [];
     for(r=0; r<brickRowCount; r++){
         //set the x and y position of the bricks
         bricks[c][r] = { x: 0, y: 0, status: 1};
+        count[c][r] = 4-r;
     }
 }
+
 
 document.addEventListener('keydown', keyDownHandler, false);
 document.addEventListener('keyup', keyUpHandler, false);
@@ -90,11 +94,26 @@ function drawBricks(){
                 bricks[c][r].y=brickY;
                 ctx.beginPath();
                 ctx.rect(brickX, brickY, brickWidth, brickHeight);
-                ctx.fillStyle = '#6600cc';
+                brickcolor(r);
                 ctx.fill();
                 ctx.closePath();
             }
         }
+    }
+}
+
+function brickcolor(x){
+    if(x===0){
+        ctx.fillStyle = '#6600cc';
+    }
+    if(x===1){
+        ctx.fillStyle = 'green';
+    }
+    if(x===2){
+        ctx.fillStyle = 'pink';
+    }
+    if(x===3){
+        ctx.fillStyle = 'orange';
     }
 }
 //Create function to keep track of score
@@ -111,9 +130,27 @@ function collisionDetection(){
             let b = bricks[c][r];
             if(b.status === 1){
                 if(x > b.x && x < b.x + brickWidth && y > b.y && y < b.y + brickHeight){
-                    // dy = -dy;
-                    b.status = 0;
-                    score++;
+                    dy = -dy;
+                    count[c][r] = count[c][r]-1
+                    // brickcolor(count[c][r]);
+                    b.fillStyle='red';
+                   
+                    console.log("c and r",c," ",r);
+                    if(count[c][r]===0){
+                        b.status = 0;
+                        score++;
+                    }
+
+                    if(score >= 14){
+                        //setInterval(draw, 9)
+                        dy = -4
+                    }
+                       
+                    if (score >= 10){
+                        dx = 3
+                        paddleWidth = 72;
+                        drawPaddle()
+                    }
                     if (score === brickRowCount*brickColumnCount){
                         alert('Congratulations!! You\'ve won!');
                         document.location.reload();
@@ -135,15 +172,18 @@ function draw(){
     //left and right walls
     if(x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
         dx = -dx;
+        console.log("Side wall")
     }
     //top walls
     if(y + dy < ballRadius){
         dy = -dy;
+        console.log("Top wall")
     }
     else if (y + dy > canvas.height-ballRadius){
         //detect paddle hits
         if(x > paddleX && x < paddleX + paddleWidth){
             dy=-dy;
+            console.log("Paddle hit")
         }
         //if no paddle hit, body of canvas is hit ==> game over
         else {
